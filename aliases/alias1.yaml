@@ -1,0 +1,7 @@
+---
+name: greet
+pack: amsterdam_st2
+description: "Greet Amsterdam"
+action_ref: "amsterdam_st2.greet"
+formats:
+  - "greet {{greeting}}"

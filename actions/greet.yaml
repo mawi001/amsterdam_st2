@@ -1,0 +1,13 @@
+---
+name: greet
+pack: amsterdam_st2
+runner_type: "local-shell-script"
+description: Greet Amsterdam!
+enabled: true
+entry_point: greet.sh
+parameters:
+    greeting:
+        type: string
+        description: Greeting you want to say to Amsterdam (i.e. Hello, Hi, Yo, Sup etc)
+        required: true
+        position: 1

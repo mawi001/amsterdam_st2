@@ -1,0 +1,25 @@
+---
+# Pack reference. It can only contain letters, digits and underscores.
+ref: amsterdam_st2
+# User-friendly pack name. If this attribute contains spaces or any other special characters, then
+# the "ref" attribute must also be specified (see above).
+name: Basis automation
+# User-friendly pack description.
+description: Basis pack containing sensors, rules and actions for basis team
+# Keywords which are used when searching for packs.
+keywords:
+    - basis
+    - automation
+# Pack version which must follow semver format (<major>.<minor>.<patch> e.g. 1.0.0)
+version: 0.0.1
+# A list of major Python versions pack is tested with and works with.
+python_versions:
+  - "2"
+  - "3"
+# Name of the pack author.
+author: Martin Willemsma
+# Email of the pack author.
+email: m.willemsma@amsterdam.nl
+# Optional list of additional contributors to the pack.
+contributors:
+  -
