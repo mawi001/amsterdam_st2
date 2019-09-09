@@ -1,0 +1,8 @@
+- name: Ansible playbook to remediate incident
+  hosts: localhost
+  become: True
+  tasks:
+    - name: restart service
+      service:
+        name: cron
+        state: restarted

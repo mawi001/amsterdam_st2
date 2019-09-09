@@ -1,0 +1,42 @@
+version: '2.0'
+
+amsterdam_st2.set_whoisoncall_topic:
+    description: >
+        A workflow to set opsgenie whoisoncall in slack channel topic
+    type: direct
+    input:
+        - channel
+    tasks:
+      get_whoisoncall_from_schedule:
+        action: opsgenie.get_schedule_who_is_on_call
+        input:
+          scheduleIdentifier: 40258446-2e9a-4582-b563-b41160e6c144
+        publish:
+          oncall: <% task(get_whoisoncall_from_schedule).result %>
+          success_msg: Found onCallParticipants
+          failed_msg: Error getting onCallParticipants
+        on-success:
+          - notify_success
+          - set_channel_topic
+        on-error:
+          - notify_error
+
+      # cannot use readable channel name but need id instead. Inspect channel.list channel.info
+      set_channel_topic:
+        action: slack.conversations.setTopic
+        input:
+          channel: "GMLJGMA4B" # channel.list #automation-dev
+          topic: "Basis OPS Supporters {{ _.oncall.result.data.onCallParticipants | map(attribute='name') | join(' ') }}"
+        publish:
+          success_msg: Set whoisoncall topic
+          failed_msg: Error setting whoisoncall topic
+          on-success:
+            - notify_success
+          on-error:
+            - notify_error
+
+      notify_success:
+        action: chatops.post_message channel="<% $.channel %>" message="Success <% $.success_msg %>. "
+
+      notify_error:
+        action: chatops.post_message channel="<% $.channel %>" message="Error <% $.failed_msg %>. "

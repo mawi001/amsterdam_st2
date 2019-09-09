@@ -1,0 +1,12 @@
+---
+description: Workflow to set whoisoncall in slack topic
+enabled: true
+entry_point: workflows/set_whoisoncall_topic.yaml
+name: set_whoisoncall_topic
+pack: amsterdam_st2
+parameters:
+  channel:
+    default: '#automation-dev'
+    immutable: false
+    type: string
+runner_type: mistral-v2

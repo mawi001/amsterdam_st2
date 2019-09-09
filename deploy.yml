@@ -1,0 +1,25 @@
+---
+- name: Run deploy
+  hosts: localhost
+  gather_facts: False
+  vars:
+    containers:
+      stackstorm: st2-docker_stackstorm_1
+  tasks:
+    - name: add container to inventory
+      add_host:
+        name: "{{ containers.stackstorm }}"
+        ansible_connection: docker
+      changed_when: false
+
+    - name: copy files to container
+      shell: docker cp . {{ containers.stackstorm }}:/opt/stackstorm/packs/amsterdam_st2
+
+    # - name: run install in container
+    #   delegate_to: "{{ containers.stackstorm }}"
+    #   raw: st2 pack install file:///opt/stackstorm/packs/amsterdam_st2
+    #   failed_when: False
+
+    - name: st2ctl reload
+      delegate_to: "{{ containers.stackstorm }}"
+      raw: st2ctl reload --register-configs

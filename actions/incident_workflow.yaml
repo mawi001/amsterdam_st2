@@ -1,0 +1,20 @@
+---
+description: Workflow for incident handling.
+enabled: true
+entry_point: workflows/handle-incident.yaml
+name: handle-incident
+pack: amsterdam_st2
+parameters:
+  subject:
+    default: foobar
+    immutable: false
+    type: string
+  service:
+    default: foobar
+    immutable: false
+    type: string
+  channel:
+    default: '#automation-dev'
+    immutable: false
+    type: string
+runner_type: mistral-v2

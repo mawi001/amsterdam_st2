@@ -1,0 +1,7 @@
+---
+name: incident
+pack: amsterdam_st2
+description: "Start incident workflow"
+action_ref: "amsterdam_st2.handle-incident"
+formats:
+  - "incident {{subject}}"

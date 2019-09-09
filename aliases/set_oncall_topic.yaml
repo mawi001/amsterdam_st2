@@ -1,0 +1,7 @@
+---
+name: set_oncall_topic
+pack: amsterdam_st2
+description: "Set oncall in channel topic"
+action_ref: "amsterdam_st2.set_whoisoncall_topic"
+formats:
+  - "oncall topic"

@@ -3,7 +3,7 @@
 ref: amsterdam_st2
 # User-friendly pack name. If this attribute contains spaces or any other special characters, then
 # the "ref" attribute must also be specified (see above).
-name: Basis automation
+name: Amsterdam
 # User-friendly pack description.
 description: Basis pack containing sensors, rules and actions for basis team
 # Keywords which are used when searching for packs.

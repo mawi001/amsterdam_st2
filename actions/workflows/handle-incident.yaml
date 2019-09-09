@@ -1,0 +1,108 @@
+version: '2.0'
+
+amsterdam_st2.handle-incident:
+    description: >
+        A workflow example that illustrates incident handling and remediate
+    type: direct
+    input:
+        - subject
+        - channel
+        - service
+    tasks:
+      announce:
+        action: chatops.post_message channel="<% $.channel %>" message="New incident detected <% $.subject %>. Started workflow!"
+        publish:
+          channel: "#automation-dev"
+          success_msg: "fire in the hole!"
+          failed_msg: "Cannot start the fire!"
+        on-success:
+          - notify_success
+          - create_jira_issue
+        on-error:
+          - notify_error
+
+      create_jira_issue:
+        action: jira.create_issue
+        input:
+          summary: Incident event <% $.subject %>
+          description: Created issue for incident <% $.subject %>
+        publish:
+          jira_issue: <% task(create_jira_issue).result %>
+          success_msg: "Created jira issue <% task(create_jira_issue).result.result.url %>"
+          failed_msg: "Error during jira issue create. Inspect logs!"
+        on-success:
+          - notify_success
+          - start_remediate_action
+        on-error:
+          - notify_error
+
+      create_opsgenie_alert:
+        action: core.local
+        input:
+          cmd: "printf 'Create opsgenie'"
+        publish:
+          success_msg: "Created opsgenie issue for incident <% $.subject %>"
+          failed_msg: "Error creating opsgenie issue. Please inspect logs!"
+        on-success:
+          - notify_success
+        on-error:
+          - notify_error
+
+      start_remediate_action:
+        action: ansible.playbook
+        input:
+          playbook: "playbook.yml"
+        publish:
+          success_msg: "Started remediate playbook to resolve issue <% $.subject %>"
+          remediate: <% task(start_remediate_action).result.stdout %>
+          failed_msg: "Error during remediate playbook."
+        on-success:
+          - notify_success
+          - comment_jira_issue
+        on-error:
+          - notify_error
+
+      comment_jira_issue:
+        action: jira.comment_issue
+        input:
+          issue_key: <% $.jira_issue.result.id %>
+          comment_text: <% $.remediate %>
+        publish:
+          success_msg: "Updated jira issue <% $.jira_issue.result.url %>"
+          failed_msg: "Error during jira isue update. Inspect logs!"
+        on-success:
+          - notify_success
+          - update_opsgenie
+      #   on-error:
+      #     - notify_error
+
+      update_opsgenie:
+        action: core.local
+        input:
+          cmd: "printf 'Update opsgenie status based on result of remediate '"
+        publish:
+          success_msg: "Update opsgenie status based on result of remediate"
+          failed_msg: "Update opsgenie status based on result of remediate"
+        on-success:
+          - notify_success
+          - set_channel_topic
+        on-error:
+          - notify_error
+
+      # # cannot use readable channel name but need id instead. Inspect channel.list channel.info
+      # set_channel_topic:
+      #   action: slack.channels.setTopic
+      #     channel="GMLJGMA4B"
+      #     topic="fire!"
+
+      # cannot use readable channel name but need id instead. Inspect channel.list channel.info
+      set_channel_topic:
+        action: slack.conversations.setTopic
+          channel="GMLJGMA4B"
+          topic="incident!"
+
+      notify_success:
+        action: chatops.post_message channel="<% $.channel %>" message="Success <% $.success_msg %>. "
+
+      notify_error:
+        action: chatops.post_message channel="<% $.channel %>" message="Error <% $.failed_msg %>. "

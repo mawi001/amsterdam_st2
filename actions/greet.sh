@@ -1,2 +1,2 @@
 #!/bin/bash
-echo "$1, Amsterdam!"
+echo "$1, POW!!"
