@@ -25,7 +25,7 @@ amsterdam_st2.set_whoisoncall_topic:
       set_channel_topic:
         action: slack.conversations.setTopic
         input:
-          channel: "GMLJGMA4B" # channel.list #automation-dev
+          channel: "G84R5A6RK" # channel.list
           topic: "Basis OPS Supporters {{ _.oncall.result.data.onCallParticipants | map(attribute='name') | join(' ') }}"
         publish:
           success_msg: Set whoisoncall topic
